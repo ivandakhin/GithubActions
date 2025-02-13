@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest  # Define OS
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -24,3 +24,14 @@ jobs:
 
       - name: Run tests
         run: mvn test
+
+      - name: Push changes to repository (if needed)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "ivandakhin"
+          git config --global user.email "ivan.dakhin@icloud.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git add .
+          git commit -m "Automated update from GitHub Actions" || echo "No changes to commit"
+          git push
